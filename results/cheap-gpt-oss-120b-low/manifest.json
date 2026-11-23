@@ -1,0 +1,33 @@
+{
+  "run_id": "cheap-gpt-oss-120b-low",
+  "created": "2026-11-08T05:12:20+00:00",
+  "strategy": "baseline",
+  "backend": "real",
+  "reasoning": "low",
+  "model": "bedrock-gpt-oss-120b",
+  "tiers": {
+    "frontier": {
+      "key": "bedrock-gpt-oss-120b",
+      "provider": "bedrock",
+      "model": "openai.gpt-oss-120b-1:0",
+      "price": {
+        "input": 0.15,
+        "output": 0.6
+      },
+      "settings": {
+        "max_tokens": 8192,
+        "thinking": "low"
+      },
+      "reasoning": "low"
+    }
+  },
+  "judge": "bedrock-qwen3-235b",
+  "runs": 3,
+  "items": 300,
+  "dataset": "data/triage_eval_v3.csv",
+  "dataset_sha256": "d6dcb86767b9bbdb37259095ba69f9b16886e2c273847a310da45d72b72d5ac4",
+  "git": {
+    "commit": "009ae6dac51ada6de30cbbba3c79ae0fae5cd3b5",
+    "dirty": true
+  }
+}

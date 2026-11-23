@@ -1,0 +1,50 @@
+# The four routing versions. The service runs the one named by TRIAGE_STRATEGY.
+#
+# start:  how the first tier is chosen
+#           frontier   always frontier
+#           cheap      always cheap
+#           rules      v1 rules (src/triage/policies.py)
+# checks: failure checks (src/triage/checks.py) run on non-final answers, in order, stopping at the first
+#         failure. One list for every task, or a list per task type plus `default`. Empty = no checking
+#         and no escalation. Implemented: non_empty, refusal, json_format, grounding, span_count,
+#         examples, agreement, cross_agreement, escalation_model (v3). Stubs: self_report, judge.
+
+baseline:
+  start: frontier
+  checks: []
+
+v1:
+  start: rules
+  checks: []
+
+v2:
+  start: cheap
+  # Chosen offline on saved answers (uv run python -m triage.eval.checks_report). A second opinion comes
+  # from a different model (models.yaml `verifier`) only where that model is at least as accurate as the
+  # cheap model on the task type, which is document QA; a weaker second model disagrees with correct
+  # answers. Elsewhere the same model is asked twice. Contracts get free checks only: any second opinion
+  # there sends most contracts to frontier and removes the saving.
+  checks:
+    document_qa: [non_empty, refusal, cross_agreement]
+    contract_extraction: [non_empty, refusal, json_format, grounding, span_count]
+    coding: [non_empty, refusal, json_format, examples, agreement]
+    default: [non_empty, refusal, json_format, agreement]
+
+v3:
+  start: cheap
+  # A classifier weighs the cheap answer's signals (free check results, span count, agreement between two
+  # cheap answers, task type, length) against the cost of escalating: triage.escalation. An empty answer or
+  # a refusal escalates without asking it.
+  checks: [non_empty, refusal, escalation_model]
+
+rules:
+  # v1's cost rule (S11): a long extraction goes to cheap when the estimated saving on its input is at
+  # least this many dollars. This is v1's accuracy/cost dial: lower = more to cheap. Chosen on held-out
+  # documents as the largest saving within 3 points of frontier (uv run python -m triage.eval.rules_report).
+  min_saving_usd: 0.0125
+
+classifier:
+  artifact: artifacts/escalation.json  # uv run python -m triage.eval.train_classifier
+  # Escalate when the estimated frontier cost per fixed answer is at most this many dollars. Unset: the
+  # value the trainer chose on held-out documents, stored in the artifact. Higher = more escalation.
+  # max_usd_per_fix: 0.05

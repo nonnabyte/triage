@@ -1,0 +1,61 @@
+{
+  "run_id": "v3-low-2",
+  "created": "2026-11-23T08:05:51+00:00",
+  "strategy": "v3",
+  "backend": "real",
+  "reasoning": "low",
+  "model": null,
+  "tiers": {
+    "cheap": {
+      "key": "bedrock-gpt-oss-20b",
+      "provider": "bedrock",
+      "model": "openai.gpt-oss-20b-1:0",
+      "price": {
+        "input": 0.07,
+        "output": 0.3
+      },
+      "settings": {
+        "max_tokens": 8192,
+        "thinking": "low"
+      },
+      "reasoning": "low"
+    },
+    "frontier": {
+      "key": "vertex-gemini-4-argon",
+      "provider": "vertex_gemini",
+      "model": "gemini-4-argon",
+      "price": {
+        "input": 2.0,
+        "output": 10.0
+      },
+      "settings": {
+        "max_tokens": 8192,
+        "thinking": "low"
+      },
+      "reasoning": "low"
+    }
+  },
+  "verifier": {
+    "key": "bedrock-gemma-3-12b",
+    "provider": "bedrock",
+    "model": "google.gemma-3-12b-it",
+    "price": {
+      "input": 0.09,
+      "output": 0.29
+    },
+    "settings": {
+      "max_tokens": 2048
+    },
+    "reasoning": null
+  },
+  "reuse_frontier": "baseline-low",
+  "judge": "bedrock-qwen3-235b",
+  "runs": 3,
+  "items": 300,
+  "dataset": "data/triage_eval_v3.csv",
+  "dataset_sha256": "d6dcb86767b9bbdb37259095ba69f9b16886e2c273847a310da45d72b72d5ac4",
+  "git": {
+    "commit": "8d1233505d49444357514fadd48d26ba7911a519",
+    "dirty": false
+  }
+}

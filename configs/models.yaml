@@ -1,0 +1,340 @@
+# Model catalog + tier map.
+#
+# tiers: which catalog entry fills each slot. null = not chosen yet.
+#        Only used when TRIAGE_BACKEND=real; with TRIAGE_BACKEND=fake every tier is a scripted fake.
+# catalog: every model we might use. Fields:
+#   provider   vertex_gemini | vertex_maas | bedrock
+#   model      provider's model ID
+#   region     optional; vertex_maas defaults to us-central1, bedrock to AWS_REGION
+#   price      USD per 1M tokens: {input, output}. Without it, the call's cost is reported as unknown.
+#              Fetched 2026-10-27, standard on-demand rates (not batch / priority / cached):
+#                bedrock: AWS Price List API, us-east-2.
+#                vertex:  cloud.google.com Vertex AI pricing page, global endpoint, prompts <= 200K tokens.
+#   settings   passed straight to PydanticAI as model settings
+#   tested     last date it answered `uv run triage-smoke`; null if it never has
+#   reasoning_levels
+#              efforts the model was checked to honour (thinking tokens rise low -> high, 2026-10-27).
+#              Such a model only runs with a fixed effort: TRIAGE_REASONING / triage-eval --reasoning.
+#              Not set on Nemotron (ignores the setting; nano-9b also leaks </think> into answers) or
+#              Qwen3-235B-2507 (instruct model, does not reason).
+
+tiers:
+  cheap: bedrock-gpt-oss-20b  # chosen 2026-11-08: best accuracy per $ of the 10 candidates (results/cheap-*)
+  smart: null
+  frontier: vertex-gemini-4-argon
+
+# The second-opinion model for v2's cross_agreement check: a different cheap model answers the same request
+# and a disagreement escalates. Chosen 2026-11-23 on saved answers (triage.eval.checks_report): the same
+# price as the cheap tier and more accurate than it on document QA, the one task type that uses it.
+verifier: bedrock-gemma-3-12b
+
+defaults:
+  timeout_s: 120
+  max_retries: 2
+  settings:
+    max_tokens: 2048
+
+catalog:
+  # --- Open-weight ~7-20B (cheap-tier candidates) ----------------------------
+  bedrock-gpt-oss-20b:
+    provider: bedrock
+    model: openai.gpt-oss-20b-1:0
+    price: {input: 0.07, output: 0.30}
+    settings: {max_tokens: 8192}  # room for high-effort reasoning, which is billed as output
+    reasoning_levels: [low, medium, high]
+    tested: 2026-10-27
+  bedrock-gemma-3-12b:
+    provider: bedrock
+    model: google.gemma-3-12b-it
+    price: {input: 0.09, output: 0.29}
+    tested: 2026-10-27
+  bedrock-ministral-3-8b:
+    provider: bedrock
+    model: mistral.ministral-3-8b-instruct
+    price: {input: 0.15, output: 0.15}
+    tested: 2026-10-27
+  bedrock-ministral-3-14b:
+    provider: bedrock
+    model: mistral.ministral-3-14b-instruct
+    price: {input: 0.20, output: 0.20}
+    tested: 2026-10-27
+  bedrock-nemotron-nano-9b:
+    provider: bedrock
+    model: nvidia.nemotron-nano-9b-v2
+    price: {input: 0.06, output: 0.23}
+    tested: 2026-10-27
+  bedrock-nemotron-nano-12b:
+    provider: bedrock
+    model: nvidia.nemotron-nano-12b-v2
+    price: {input: 0.20, output: 0.60}
+    tested: 2026-10-27
+  bedrock-llama-3.1-8b:
+    provider: bedrock
+    model: us.meta.llama3-1-8b-instruct-v1:0
+    price: {input: 0.22, output: 0.22}
+    tested: 2026-10-27
+
+  # Added 2026-11-03: every other open-weight text model Bedrock lists in us-east-2 (prices: AWS price list).
+  # Not added: GLM 5.3 (listed, but "not available for this account").
+  bedrock-gemma-3-4b:
+    provider: bedrock
+    model: google.gemma-3-4b-it
+    price: {input: 0.04, output: 0.08}
+    tested: 2026-11-03
+  bedrock-gemma-3-27b:
+    provider: bedrock
+    model: google.gemma-3-27b-it
+    price: {input: 0.23, output: 0.38}
+    tested: 2026-11-03
+  bedrock-ministral-3-3b:
+    provider: bedrock
+    model: mistral.ministral-3-3b-instruct
+    price: {input: 0.1, output: 0.1}
+    tested: 2026-11-03
+  bedrock-magistral-small:
+    # 24B
+    provider: bedrock
+    model: mistral.magistral-small-2509
+    price: {input: 0.5, output: 1.5}
+    settings: {max_tokens: 8192}  # reasons before answering; reasoning is billed as output
+    tested: 2026-11-03
+  bedrock-qwen3-32b:
+    provider: bedrock
+    model: qwen.qwen3-32b-v1:0
+    price: {input: 0.15, output: 0.6}
+    settings: {max_tokens: 8192}  # reasons before answering; reasoning is billed as output
+    tested: 2026-11-03
+  bedrock-qwen3-coder-30b:
+    # 30B total, 3B active; built for code
+    provider: bedrock
+    model: qwen.qwen3-coder-30b-a3b-v1:0
+    price: {input: 0.15, output: 0.6}
+    tested: 2026-11-03
+  bedrock-nemotron-nano-3-30b:
+    provider: bedrock
+    model: nvidia.nemotron-nano-3-30b
+    price: {input: 0.06, output: 0.24}
+    settings: {max_tokens: 8192}  # reasons before answering; reasoning is billed as output
+    tested: 2026-11-03
+  bedrock-glm-4.7-flash:
+    provider: bedrock
+    model: zai.glm-4.7-flash
+    price: {input: 0.07, output: 0.4}
+    settings: {max_tokens: 8192}  # reasons before answering; reasoning is billed as output
+    tested: 2026-11-03
+  bedrock-gpt-oss-safeguard-20b:
+    # safety-policy classifier variant of gpt-oss-20b
+    provider: bedrock
+    model: openai.gpt-oss-safeguard-20b
+    price: {input: 0.07, output: 0.2}
+    settings: {max_tokens: 8192}  # reasons before answering; reasoning is billed as output
+    tested: 2026-11-03
+  bedrock-voxtral-mini-3b:
+    # speech model; also answers text
+    provider: bedrock
+    model: mistral.voxtral-mini-3b-2507
+    price: {input: 0.04, output: 0.04}
+    tested: 2026-11-03
+  bedrock-voxtral-small-24b:
+    # speech model; also answers text
+    provider: bedrock
+    model: mistral.voxtral-small-24b-2507
+    price: {input: 0.1, output: 0.3}
+    tested: 2026-11-03
+
+  # --- Open-weight ~70B+ (smart-tier candidates) --------------------------
+  bedrock-llama-3.3-70b:
+    provider: bedrock
+    model: meta.llama3-3-70b-instruct-v1:0
+    price: {input: 0.72, output: 0.72}
+    tested: 2026-10-27
+  bedrock-gpt-oss-120b:
+    provider: bedrock
+    model: openai.gpt-oss-120b-1:0
+    price: {input: 0.15, output: 0.60}
+    settings: {max_tokens: 8192}
+    reasoning_levels: [low, medium, high]
+    tested: 2026-10-27
+  bedrock-qwen3-235b:
+    provider: bedrock
+    model: qwen.qwen3-235b-a22b-2507-v1:0
+    price: {input: 0.22, output: 0.88}
+    tested: 2026-10-27
+  bedrock-nemotron-super-120b:
+    provider: bedrock
+    model: nvidia.nemotron-super-3-120b
+    price: {input: 0.15, output: 0.65}
+    tested: 2026-10-27
+  vertex-llama-3.3-70b:
+    provider: vertex_maas
+    model: meta/llama-3.3-70b-instruct-maas
+    price: {input: 0.72, output: 0.72}
+    tested: null  # not enabled in our GCP project yet (Model Garden); same model works on Bedrock
+  vertex-gpt-oss-120b:
+    provider: vertex_maas
+    model: openai/gpt-oss-120b-maas
+    price: {input: 0.09, output: 0.36}
+    tested: 2026-10-27
+  vertex-qwen3-235b:
+    provider: vertex_maas
+    model: qwen/qwen3-235b-a22b-instruct-2507-maas
+    price: {input: 0.22, output: 0.88}
+    tested: null  # not enabled in our GCP project yet (Model Garden); same model works on Bedrock
+
+  # Added 2026-11-03: every other open-weight text model Bedrock lists in us-east-2 (prices: AWS price list).
+  bedrock-llama-3.1-70b:
+    provider: bedrock
+    model: us.meta.llama3-1-70b-instruct-v1:0
+    price: {input: 0.72, output: 0.72}
+    tested: 2026-11-03
+  bedrock-llama-4-scout:
+    # 109B total, 17B active
+    provider: bedrock
+    model: us.meta.llama4-scout-17b-instruct-v1:0
+    price: {input: 0.17, output: 0.66}
+    tested: 2026-11-03
+  bedrock-llama-4-maverick:
+    # 400B total, 17B active
+    provider: bedrock
+    model: us.meta.llama4-maverick-17b-instruct-v1:0
+    price: {input: 0.24, output: 0.97}
+    tested: 2026-11-03
+  bedrock-qwen3-next-80b:
+    provider: bedrock
+    model: qwen.qwen3-next-80b-a3b
+    price: {input: 0.14, output: 1.2}
+    settings: {max_tokens: 8192}  # reasons before answering; reasoning is billed as output
+    tested: 2026-11-03
+  bedrock-qwen3-coder-480b:
+    provider: bedrock
+    model: qwen.qwen3-coder-480b-a35b-v1:0
+    price: {input: 0.45, output: 1.8}
+    tested: 2026-11-03
+  bedrock-qwen3-vl-235b:
+    provider: bedrock
+    model: qwen.qwen3-vl-235b-a22b
+    price: {input: 0.53, output: 2.66}
+    tested: 2026-11-03
+  bedrock-deepseek-v3.1:
+    provider: bedrock
+    model: deepseek.v3-v1:0
+    price: {input: 0.58, output: 1.68}
+    settings: {max_tokens: 8192}  # reasons before answering; reasoning is billed as output
+    tested: 2026-11-03
+  bedrock-deepseek-v3.2:
+    provider: bedrock
+    model: deepseek.v3.2
+    price: {input: 0.62, output: 1.85}
+    settings: {max_tokens: 8192}  # reasons before answering; reasoning is billed as output
+    tested: 2026-11-03
+  bedrock-deepseek-r1:
+    provider: bedrock
+    model: us.deepseek.r1-v1:0
+    price: {input: 1.35, output: 5.4}
+    settings: {max_tokens: 8192}  # reasons before answering; reasoning is billed as output
+    tested: 2026-11-03
+  bedrock-minimax-m2:
+    provider: bedrock
+    model: minimax.minimax-m2
+    price: {input: 0.3, output: 1.2}
+    settings: {max_tokens: 8192}  # reasons before answering; reasoning is billed as output
+    tested: 2026-11-03
+  bedrock-minimax-m2.1:
+    provider: bedrock
+    model: minimax.minimax-m2.1
+    price: {input: 0.3, output: 1.2}
+    settings: {max_tokens: 8192}  # reasons before answering; reasoning is billed as output
+    tested: 2026-11-03
+  bedrock-minimax-m2.5:
+    provider: bedrock
+    model: minimax.minimax-m2.5
+    price: {input: 0.3, output: 1.2}
+    settings: {max_tokens: 8192}  # reasons before answering; reasoning is billed as output
+    tested: 2026-11-03
+  bedrock-mistral-large-3:
+    provider: bedrock
+    model: mistral.mistral-large-3-675b-instruct
+    price: {input: 0.5, output: 1.5}
+    tested: 2026-11-03
+  bedrock-devstral-2:
+    # built for code
+    provider: bedrock
+    model: mistral.devstral-2-123b
+    price: {input: 0.4, output: 2.0}
+    tested: 2026-11-03
+  bedrock-pixtral-large:
+    # vision model; also answers text
+    provider: bedrock
+    model: us.mistral.pixtral-large-2502-v1:0
+    price: {input: 2.0, output: 6.0}
+    tested: 2026-11-03
+  bedrock-kimi-k2-thinking:
+    provider: bedrock
+    model: moonshot.kimi-k2-thinking
+    price: {input: 0.6, output: 2.5}
+    settings: {max_tokens: 8192}  # reasons before answering; reasoning is billed as output
+    tested: 2026-11-03
+  bedrock-kimi-k2.5:
+    provider: bedrock
+    model: moonshotai.kimi-k2.5
+    price: {input: 0.6, output: 3.0}
+    settings: {max_tokens: 8192}  # reasons before answering; reasoning is billed as output
+    tested: 2026-11-03
+  bedrock-kimi-k3:
+    # costs more than Argon
+    provider: bedrock
+    model: us.moonshotai.kimi-k3
+    price: {input: 3.3, output: 16.5}
+    settings: {max_tokens: 8192}  # reasons before answering; reasoning is billed as output
+    tested: 2026-11-03
+  bedrock-glm-4.7:
+    provider: bedrock
+    model: zai.glm-4.7
+    price: {input: 0.6, output: 2.2}
+    settings: {max_tokens: 8192}  # reasons before answering; reasoning is billed as output
+    tested: 2026-11-03
+  bedrock-glm-5:
+    provider: bedrock
+    model: zai.glm-5
+    price: {input: 1.0, output: 3.2}
+    settings: {max_tokens: 8192}  # reasons before answering; reasoning is billed as output
+    tested: 2026-11-03
+  bedrock-gpt-oss-safeguard-120b:
+    # safety-policy classifier variant of gpt-oss-120b
+    provider: bedrock
+    model: openai.gpt-oss-safeguard-120b
+    price: {input: 0.15, output: 0.6}
+    settings: {max_tokens: 8192}  # reasons before answering; reasoning is billed as output
+    tested: 2026-11-03
+
+  # --- Commercial (frontier-tier candidates) ----------------------------------
+  vertex-gemini-4-argon:
+    # Google's strongest; GA 2026-10-13. Price doubles to {input: 4.00, output: 20.00} from 2026-12-01.
+    provider: vertex_gemini
+    model: gemini-4-argon
+    price: {input: 2.00, output: 10.00}
+    settings: {max_tokens: 8192}
+    reasoning_levels: [low, medium, high]
+    tested: 2026-10-27
+  gemini-api-4-argon:
+    # The same model through the Gemini API (key only). Used when the Vertex quota is exhausted; the price
+    # is assumed equal to Vertex's and should be checked against the Gemini API price list.
+    provider: gemini_api
+    model: gemini-4-argon
+    price: {input: 2.00, output: 10.00}
+    settings: {max_tokens: 8192}
+    reasoning_levels: [low, medium, high]
+    tested: 2026-11-23
+  vertex-gemini-3.1-pro-preview:
+    # Preview: Google may change or retire it.
+    provider: vertex_gemini
+    model: gemini-3.1-pro-preview
+    price: {input: 2.00, output: 12.00}
+    settings: {max_tokens: 8192}
+    tested: 2026-10-27
+  vertex-gemini-3.8-flash:
+    # Price rises to {input: 1.50, output: 7.50} from 2027-01-01.
+    provider: vertex_gemini
+    model: gemini-3.8-flash
+    price: {input: 0.75, output: 3.75}
+    tested: 2026-10-27

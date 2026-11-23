@@ -1,0 +1,230 @@
+{
+  "run_id": "v2-low",
+  "overall": {
+    "n": 900,
+    "accuracy": 0.7767,
+    "passed": 699,
+    "graded": 900,
+    "grading_errors": 0,
+    "needs_review": 89,
+    "failed_requests": 0,
+    "truncated": 0,
+    "cost_usd": 0.937214,
+    "cost_per_item_usd": 0.001041,
+    "cost_complete": true,
+    "judge_cost_usd": 0.009177,
+    "input_tokens": 1795895,
+    "output_tokens": 283868,
+    "latency_p50_ms": 1249.2,
+    "latency_p95_ms": 13855.8,
+    "final_tier": {
+      "cheap": 681,
+      "frontier": 219
+    }
+  },
+  "by_use_case": {
+    "coding": {
+      "n": 270,
+      "accuracy": 0.8667,
+      "passed": 234,
+      "graded": 270,
+      "grading_errors": 0,
+      "needs_review": 0,
+      "failed_requests": 0,
+      "truncated": 0,
+      "cost_usd": 0.17516,
+      "cost_per_item_usd": 0.000649,
+      "cost_complete": true,
+      "judge_cost_usd": 0.00379,
+      "input_tokens": 89652,
+      "output_tokens": 168754,
+      "latency_p50_ms": 2422.1,
+      "latency_p95_ms": 8251.1,
+      "final_tier": {
+        "cheap": 201,
+        "frontier": 69
+      }
+    },
+    "contract_extraction": {
+      "n": 270,
+      "accuracy": 0.5296,
+      "passed": 143,
+      "graded": 270,
+      "grading_errors": 0,
+      "needs_review": 82,
+      "failed_requests": 0,
+      "truncated": 0,
+      "cost_usd": 0.624961,
+      "cost_per_item_usd": 0.002315,
+      "cost_complete": true,
+      "judge_cost_usd": 0.000796,
+      "input_tokens": 1486765,
+      "output_tokens": 59127,
+      "latency_p50_ms": 657.7,
+      "latency_p95_ms": 13855.8,
+      "final_tier": {
+        "cheap": 232,
+        "frontier": 38
+      }
+    },
+    "document_qa": {
+      "n": 270,
+      "accuracy": 0.8778,
+      "passed": 237,
+      "graded": 270,
+      "grading_errors": 0,
+      "needs_review": 7,
+      "failed_requests": 0,
+      "truncated": 0,
+      "cost_usd": 0.125545,
+      "cost_per_item_usd": 0.000465,
+      "cost_complete": true,
+      "judge_cost_usd": 0.003292,
+      "input_tokens": 167743,
+      "output_tokens": 42923,
+      "latency_p50_ms": 1291.5,
+      "latency_p95_ms": 18964.7,
+      "final_tier": {
+        "cheap": 162,
+        "frontier": 108
+      }
+    },
+    "misc_classification": {
+      "n": 42,
+      "accuracy": 0.881,
+      "passed": 37,
+      "graded": 42,
+      "grading_errors": 0,
+      "needs_review": 0,
+      "failed_requests": 0,
+      "truncated": 0,
+      "cost_usd": 0.007405,
+      "cost_per_item_usd": 0.000176,
+      "cost_complete": true,
+      "judge_cost_usd": 0.0,
+      "input_tokens": 38109,
+      "output_tokens": 3192,
+      "latency_p50_ms": 546.3,
+      "latency_p95_ms": 123364.6,
+      "final_tier": {
+        "cheap": 39,
+        "frontier": 3
+      }
+    },
+    "misc_math": {
+      "n": 42,
+      "accuracy": 1.0,
+      "passed": 42,
+      "graded": 42,
+      "grading_errors": 0,
+      "needs_review": 0,
+      "failed_requests": 0,
+      "truncated": 0,
+      "cost_usd": 0.002968,
+      "cost_per_item_usd": 7.1e-05,
+      "cost_complete": true,
+      "judge_cost_usd": 0.0,
+      "input_tokens": 12561,
+      "output_tokens": 6204,
+      "latency_p50_ms": 832.3,
+      "latency_p95_ms": 1032.2,
+      "final_tier": {
+        "cheap": 41,
+        "frontier": 1
+      }
+    },
+    "misc_planning": {
+      "n": 3,
+      "accuracy": 1.0,
+      "passed": 3,
+      "graded": 3,
+      "grading_errors": 0,
+      "needs_review": 0,
+      "failed_requests": 0,
+      "truncated": 0,
+      "cost_usd": 0.001092,
+      "cost_per_item_usd": 0.000364,
+      "cost_complete": true,
+      "judge_cost_usd": 0.001298,
+      "input_tokens": 465,
+      "output_tokens": 3530,
+      "latency_p50_ms": 3917.4,
+      "latency_p95_ms": 3917.4,
+      "final_tier": {
+        "cheap": 3
+      }
+    },
+    "misc_sentiment": {
+      "n": 3,
+      "accuracy": 1.0,
+      "passed": 3,
+      "graded": 3,
+      "grading_errors": 0,
+      "needs_review": 0,
+      "failed_requests": 0,
+      "truncated": 0,
+      "cost_usd": 8.3e-05,
+      "cost_per_item_usd": 2.8e-05,
+      "cost_complete": true,
+      "judge_cost_usd": 0.0,
+      "input_tokens": 600,
+      "output_tokens": 138,
+      "latency_p50_ms": 555.1,
+      "latency_p95_ms": 555.1,
+      "final_tier": {
+        "cheap": 3
+      }
+    }
+  },
+  "by_set": {
+    "public": {
+      "n": 780,
+      "accuracy": 0.7474,
+      "passed": 583,
+      "graded": 780,
+      "grading_errors": 0,
+      "needs_review": 87,
+      "failed_requests": 0,
+      "truncated": 0,
+      "cost_usd": 0.845612,
+      "cost_per_item_usd": 0.001084,
+      "cost_complete": true,
+      "judge_cost_usd": 0.009177,
+      "input_tokens": 1590227,
+      "output_tokens": 251929,
+      "latency_p50_ms": 1291.5,
+      "latency_p95_ms": 14408.4,
+      "final_tier": {
+        "cheap": 580,
+        "frontier": 200
+      }
+    },
+    "synthetic": {
+      "n": 120,
+      "accuracy": 0.9667,
+      "passed": 116,
+      "graded": 120,
+      "grading_errors": 0,
+      "needs_review": 2,
+      "failed_requests": 0,
+      "truncated": 0,
+      "cost_usd": 0.091603,
+      "cost_per_item_usd": 0.000763,
+      "cost_complete": true,
+      "judge_cost_usd": 0.0,
+      "input_tokens": 205668,
+      "output_tokens": 31939,
+      "latency_p50_ms": 962.4,
+      "latency_p95_ms": 10660.9,
+      "final_tier": {
+        "cheap": 101,
+        "frontier": 19
+      }
+    }
+  },
+  "accuracy_by_run": {
+    "1": 0.7633,
+    "2": 0.7833,
+    "3": 0.7833
+  }
+}

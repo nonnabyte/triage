@@ -1,0 +1,41 @@
+{
+  "run_id": "cheap-gemma-3-4b",
+  "created": "2026-11-08T04:15:52+00:00",
+  "strategy": "baseline",
+  "backend": "real",
+  "reasoning": null,
+  "model": "bedrock-gemma-3-4b",
+  "tiers": {
+    "frontier": {
+      "key": "bedrock-gemma-3-4b",
+      "provider": "bedrock",
+      "model": "google.gemma-3-4b-it",
+      "price": {
+        "input": 0.04,
+        "output": 0.08
+      },
+      "settings": {
+        "max_tokens": 2048
+      },
+      "reasoning": null
+    }
+  },
+  "judge": "bedrock-qwen3-235b",
+  "runs": 3,
+  "items": 300,
+  "dataset": "data/triage_eval_v3.csv",
+  "dataset_sha256": "d6dcb86767b9bbdb37259095ba69f9b16886e2c273847a310da45d72b72d5ac4",
+  "git": {
+    "commit": "009ae6dac51ada6de30cbbba3c79ae0fae5cd3b5",
+    "dirty": true
+  },
+  "resumed": [
+    {
+      "at": "2026-11-08T04:15:52+00:00",
+      "git": {
+        "commit": "009ae6dac51ada6de30cbbba3c79ae0fae5cd3b5",
+        "dirty": true
+      }
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "run_id": "baseline-low",
+  "created": "2026-10-28T03:08:00+00:00",
+  "strategy": "baseline",
+  "backend": "real",
+  "reasoning": "low",
+  "tiers": {
+    "frontier": {
+      "key": "vertex-gemini-4-argon",
+      "provider": "vertex_gemini",
+      "model": "gemini-4-argon",
+      "price": {
+        "input": 2.0,
+        "output": 10.0
+      },
+      "settings": {
+        "max_tokens": 8192,
+        "thinking": "low"
+      },
+      "reasoning": "low"
+    }
+  },
+  "judge": "bedrock-qwen3-235b",
+  "runs": 3,
+  "items": 300,
+  "dataset": "data/triage_eval_v3.csv",
+  "dataset_sha256": "d6dcb86767b9bbdb37259095ba69f9b16886e2c273847a310da45d72b72d5ac4",
+  "git": {
+    "commit": "12cd76dfe1f6d043c49f9e55bce4cf1d6c1e6fe8",
+    "dirty": false
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "run_id": "cheap-qwen3-coder-30b",
+  "created": "2026-11-08T04:15:51+00:00",
+  "strategy": "baseline",
+  "backend": "real",
+  "reasoning": null,
+  "model": "bedrock-qwen3-coder-30b",
+  "tiers": {
+    "frontier": {
+      "key": "bedrock-qwen3-coder-30b",
+      "provider": "bedrock",
+      "model": "qwen.qwen3-coder-30b-a3b-v1:0",
+      "price": {
+        "input": 0.15,
+        "output": 0.6
+      },
+      "settings": {
+        "max_tokens": 2048
+      },
+      "reasoning": null
+    }
+  },
+  "judge": "bedrock-qwen3-235b",
+  "runs": 3,
+  "items": 300,
+  "dataset": "data/triage_eval_v3.csv",
+  "dataset_sha256": "d6dcb86767b9bbdb37259095ba69f9b16886e2c273847a310da45d72b72d5ac4",
+  "git": {
+    "commit": "009ae6dac51ada6de30cbbba3c79ae0fae5cd3b5",
+    "dirty": true
+  }
+}
